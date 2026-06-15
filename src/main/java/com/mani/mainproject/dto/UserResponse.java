@@ -1,6 +1,8 @@
 package com.mani.mainproject.dto;
 
 import com.mani.mainproject.enums.Role;
+import com.mani.mainproject.enums.UserStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,4 +17,5 @@ public class UserResponse {
     private String userName;
     private String email;
     private Role role;
+    private UserStatus status;
 }

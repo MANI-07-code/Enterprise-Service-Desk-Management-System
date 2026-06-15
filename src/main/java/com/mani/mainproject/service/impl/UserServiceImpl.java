@@ -1,13 +1,17 @@
 package com.mani.mainproject.service.impl;
 
 import com.mani.mainproject.dto.ChangeRoleRequest;
+import com.mani.mainproject.dto.ChangeStatusRequest;
+import com.mani.mainproject.dto.UserResponse;
 import com.mani.mainproject.entity.User;
-import com.mani.mainproject.enums.Role;
 import com.mani.mainproject.exception.ResourceNotFoundException;
 import com.mani.mainproject.repository.UserRepository;
 import com.mani.mainproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -16,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public void changeUserRole(Long userId, ChangeRoleRequest request){
+    public String changeUserRole(Long userId, ChangeRoleRequest request){
 
         User user = userRepository
                 .findById(userId)
@@ -24,6 +28,40 @@ public class UserServiceImpl implements UserService {
                         new ResourceNotFoundException("User not found"));
         user.setRole(request.getRole());
         userRepository.save(user);
+       return "Role updated successfully";
+    }
+@Override
+    public List<UserResponse> getAllUsers(){
 
+        List<User> users =userRepository.findAll();
+        List<UserResponse> responses = new ArrayList<>();
+        for(User user : users){
+            responses.add(convertToResponse(user));
+        }
+         return responses;
+    }
+
+    @Override
+    public UserResponse getUserById(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return convertToResponse(user);
+    }
+
+    @Override
+    public String changeUserStatus(Long userId, ChangeStatusRequest request){
+        User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User Not Found"));
+        user.setStatus(request.getStatus());
+        userRepository.save(user);
+        return "Status updated successfully";
+    }
+
+    private UserResponse convertToResponse(User user){
+        UserResponse response =new UserResponse();
+        response.setUserId(user.getUserId());
+        response.setUserName(user.getUserName());
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole());
+        response.setStatus(user.getStatus());
+        return response;
     }
 }
