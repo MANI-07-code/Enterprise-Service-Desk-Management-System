@@ -3,6 +3,7 @@ package com.mani.mainproject.service.impl;
 import com.mani.mainproject.dto.AssignTicketRequest;
 import com.mani.mainproject.dto.CreateTicketRequest;
 import com.mani.mainproject.dto.TicketResponse;
+import com.mani.mainproject.dto.UpdateTicketStatusRequest;
 import com.mani.mainproject.entity.Ticket;
 import com.mani.mainproject.entity.User;
 import com.mani.mainproject.enums.Role;
@@ -67,6 +68,7 @@ public class TicketServiceImpl implements TicketService {
         List<Ticket> tickets = ticketRepository.findAll();
 
         List<TicketResponse> responses = new ArrayList<>();
+
         for(Ticket ticket : tickets){
             responses.add(convertToResponse(ticket));
         }
@@ -108,6 +110,37 @@ public class TicketServiceImpl implements TicketService {
         }
 
         return responses;
+    }
+
+    @Override
+    public String updateTicketStatus(Long ticketId , UpdateTicketStatusRequest request){
+
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new ResourceNotFoundException("Invalid ticket"));
+
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(ticket.getAssignedTo() == null ||
+                !ticket.getAssignedTo().getUserId().equals(user.getUserId())){
+            throw new BadRequestException("Ticket is not assigned to you");
+        }
+
+        if(ticket.getStatus() == TicketStatus.ASSIGNED
+        && request.getStatus() == TicketStatus.IN_PROGRESS){
+
+            ticket.setStatus(TicketStatus.IN_PROGRESS);
+        }
+
+        else if(ticket.getStatus() == TicketStatus.IN_PROGRESS
+        && request.getStatus() == TicketStatus.RESOLVED){
+
+            ticket.setStatus(TicketStatus.RESOLVED);
+        }
+        else {
+            throw new BadRequestException("Invalid status transition");
+        }
+
+        ticketRepository.save(ticket);
+return "Ticket status updated successfully";
     }
 
     private TicketResponse convertToResponse(

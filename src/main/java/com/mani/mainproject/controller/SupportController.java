@@ -1,12 +1,10 @@
 package com.mani.mainproject.controller;
 
 import com.mani.mainproject.dto.TicketResponse;
+import com.mani.mainproject.dto.UpdateTicketStatusRequest;
 import com.mani.mainproject.service.TicketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +20,10 @@ public class SupportController {
         return ticketService.getAssignedTickets();
     }
 
+    @PutMapping("/tickets/{id}/status")
+    public String updateTicketStatus(@PathVariable Long id , @RequestBody UpdateTicketStatusRequest request){
+
+        return ticketService.updateTicketStatus(id,request);
+    }
 
 }
