@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,11 +39,21 @@ public class TicketServiceImpl implements TicketService {
         Ticket savedTicket = ticketRepository.save(ticket);
 
         return convertToResponse(savedTicket);
+    }
+
+    @Override
+    public List<TicketResponse> getMyTickets(){
+        List<TicketResponse> responses =new ArrayList<>();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 
 
+        List<Ticket> tickets = ticketRepository.findByCreatedBy(user);
 
-
+       for(Ticket ticket : tickets){
+           responses.add(convertToResponse(ticket));
+       }
+      return responses;
     }
 
     private TicketResponse convertToResponse(
