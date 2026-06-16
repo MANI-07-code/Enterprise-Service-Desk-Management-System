@@ -13,5 +13,8 @@ public interface TicketService {
     List<TicketResponse> getMyTickets();
 
     List<TicketResponse> getAllTickets();
+
     String assignTicket(Long ticketId, AssignTicketRequest request);
+
+    List<TicketResponse> getAssignedTickets();
 }

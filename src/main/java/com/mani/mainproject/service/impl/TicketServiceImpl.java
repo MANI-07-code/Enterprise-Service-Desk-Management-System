@@ -97,6 +97,19 @@ public class TicketServiceImpl implements TicketService {
         return "Ticket assigned successfully";
     }
 
+    @Override
+    public List<TicketResponse> getAssignedTickets(){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Ticket> tickets = ticketRepository.findByAssignedTo(user);
+        List<TicketResponse> responses = new ArrayList<>();
+
+        for(Ticket ticket : tickets){
+            responses.add(convertToResponse(ticket));
+        }
+
+        return responses;
+    }
+
     private TicketResponse convertToResponse(
             Ticket ticket){
 

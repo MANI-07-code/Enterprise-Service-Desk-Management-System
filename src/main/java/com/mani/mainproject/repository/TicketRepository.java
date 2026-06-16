@@ -9,4 +9,5 @@ import java.util.List;
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
 
     List<Ticket> findByCreatedBy(User user);
+    List<Ticket> findByAssignedTo(User user);
 }
