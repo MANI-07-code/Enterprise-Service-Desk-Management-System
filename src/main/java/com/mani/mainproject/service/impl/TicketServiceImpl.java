@@ -1,12 +1,17 @@
 package com.mani.mainproject.service.impl;
 
+import com.mani.mainproject.dto.AssignTicketRequest;
 import com.mani.mainproject.dto.CreateTicketRequest;
 import com.mani.mainproject.dto.TicketResponse;
 import com.mani.mainproject.entity.Ticket;
 import com.mani.mainproject.entity.User;
+import com.mani.mainproject.enums.Role;
 import com.mani.mainproject.enums.TicketPriority;
 import com.mani.mainproject.enums.TicketStatus;
+import com.mani.mainproject.exception.BadRequestException;
+import com.mani.mainproject.exception.ResourceNotFoundException;
 import com.mani.mainproject.repository.TicketRepository;
+import com.mani.mainproject.repository.UserRepository;
 import com.mani.mainproject.service.TicketService;
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +28,7 @@ public class TicketServiceImpl implements TicketService {
 
 
     private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
     @Override
     public TicketResponse createTicket(CreateTicketRequest request){
 
@@ -54,6 +60,41 @@ public class TicketServiceImpl implements TicketService {
            responses.add(convertToResponse(ticket));
        }
       return responses;
+    }
+
+    @Override
+    public List<TicketResponse> getAllTickets(){
+        List<Ticket> tickets = ticketRepository.findAll();
+
+        List<TicketResponse> responses = new ArrayList<>();
+        for(Ticket ticket : tickets){
+            responses.add(convertToResponse(ticket));
+        }
+        return responses;
+    }
+
+    @Override
+    public String assignTicket(Long ticketId , AssignTicketRequest request){
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+
+        User engineer = userRepository.findById(request.getSupportEngineerId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if(engineer.getRole() != Role.SUPPORT_ENGINEER){
+            throw new BadRequestException("Selected user is not SUPPORT_ENGINEER");
+        }
+
+        if(ticket.getStatus() == TicketStatus.RESOLVED
+                || ticket.getStatus() == TicketStatus.CLOSED){
+
+            throw new BadRequestException(
+                    "Ticket cannot be assigned");
+        }
+        ticket.setAssignedTo(engineer);
+        ticket.setStatus(TicketStatus.ASSIGNED);
+        ticketRepository.save(ticket);
+        return "Ticket assigned successfully";
     }
 
     private TicketResponse convertToResponse(
