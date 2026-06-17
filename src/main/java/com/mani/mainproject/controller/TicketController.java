@@ -26,4 +26,11 @@ public class TicketController {
         return ticketService.getMyTickets();
     }
 
+    @PutMapping("/{id}/close")
+    public String closeTicket(
+            @PathVariable Long id){
+
+        return ticketService.closeTicket(id);
+    }
+
 }

@@ -143,6 +143,31 @@ public class TicketServiceImpl implements TicketService {
 return "Ticket status updated successfully";
     }
 
+    @Override
+    public String closeTicket(Long ticketId){
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+
+        User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!ticket.getCreatedBy().getUserId().equals(user.getUserId())){
+
+            throw new BadRequestException("you only change your tickets");
+        }
+
+        if(!ticket.getStatus().equals(TicketStatus.RESOLVED)){
+            throw new BadRequestException("Invalid status transition");
+        }
+        ticket.setStatus(TicketStatus.CLOSED);
+
+        ticketRepository.save(ticket);
+
+        return "Ticket closed successfully";
+
+
+    }
+
     private TicketResponse convertToResponse(
             Ticket ticket){
 

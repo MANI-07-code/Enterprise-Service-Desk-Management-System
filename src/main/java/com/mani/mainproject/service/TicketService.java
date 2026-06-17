@@ -18,5 +18,8 @@ public interface TicketService {
     String assignTicket(Long ticketId, AssignTicketRequest request);
 
     List<TicketResponse> getAssignedTickets();
+
     String updateTicketStatus(Long ticketId, UpdateTicketStatusRequest request);
+
+    String closeTicket(Long ticketId);
 }
