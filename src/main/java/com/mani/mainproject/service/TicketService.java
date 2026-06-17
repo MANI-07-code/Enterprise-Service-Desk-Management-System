@@ -21,4 +21,6 @@ public interface TicketService {
     String closeTicket(Long ticketId);
 
     String changeTicketPriority(Long ticketId , ChangePriorityRequest request);
+
+    TicketResponse getTicketById(Long ticketId);
 }

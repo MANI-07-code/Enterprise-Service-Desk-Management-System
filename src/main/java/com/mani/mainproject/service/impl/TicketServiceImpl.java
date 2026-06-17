@@ -7,6 +7,7 @@ import com.mani.mainproject.enums.Role;
 import com.mani.mainproject.enums.TicketPriority;
 import com.mani.mainproject.enums.TicketStatus;
 import com.mani.mainproject.exception.BadRequestException;
+import com.mani.mainproject.exception.ForbiddenException;
 import com.mani.mainproject.exception.ResourceNotFoundException;
 import com.mani.mainproject.repository.TicketRepository;
 import com.mani.mainproject.repository.UserRepository;
@@ -179,6 +180,44 @@ return "Ticket status updated successfully";
 
         return "Priority updated successfully";
     }
+
+    @Override
+    public TicketResponse getTicketById(Long ticketId){
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+
+        User user =(User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
+        if(user.getRole() == Role.MANAGER || user.getRole() == Role.ADMIN ){
+            return convertToResponse(ticket);
+        }
+
+        if(user.getRole() == Role.EMPLOYEE){
+
+            if(ticket.getCreatedBy()
+                    .getUserId()
+                    .equals(user.getUserId())){
+
+                return convertToResponse(ticket);
+            }
+        }
+
+        if(user.getRole() == Role.SUPPORT_ENGINEER){
+
+            if(ticket.getAssignedTo() != null &&
+                    ticket.getAssignedTo()
+                            .getUserId()
+                            .equals(user.getUserId())){
+
+                return convertToResponse(ticket);
+            }
+        }
+
+        throw new ForbiddenException("Access denied");
+
+    }
+
 
     private TicketResponse convertToResponse(
             Ticket ticket){

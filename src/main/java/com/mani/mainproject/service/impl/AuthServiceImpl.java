@@ -8,6 +8,7 @@ import com.mani.mainproject.entity.User;
 import com.mani.mainproject.enums.Role;
 import com.mani.mainproject.enums.UserStatus;
 import com.mani.mainproject.exception.BadRequestException;
+import com.mani.mainproject.exception.ForbiddenException;
 import com.mani.mainproject.exception.ResourceNotFoundException;
 import com.mani.mainproject.repository.UserRepository;
 import com.mani.mainproject.security.JwtService;
@@ -66,6 +67,12 @@ public class AuthServiceImpl implements AuthService {
 
             throw new BadRequestException("invalid password ");
         }
+
+        if(user.getStatus() == UserStatus.INACTIVE){
+            throw new ForbiddenException("Account is inactive");
+        }
+
+
 //        boolean match = passwordEncoder.matches(
 //                request.getPassword(),
 //                user.getPassword());
