@@ -1,9 +1,6 @@
 package com.mani.mainproject.service;
 
-import com.mani.mainproject.dto.AssignTicketRequest;
-import com.mani.mainproject.dto.CreateTicketRequest;
-import com.mani.mainproject.dto.TicketResponse;
-import com.mani.mainproject.dto.UpdateTicketStatusRequest;
+import com.mani.mainproject.dto.*;
 
 import java.util.List;
 
@@ -22,4 +19,6 @@ public interface TicketService {
     String updateTicketStatus(Long ticketId, UpdateTicketStatusRequest request);
 
     String closeTicket(Long ticketId);
+
+    String changeTicketPriority(Long ticketId , ChangePriorityRequest request);
 }

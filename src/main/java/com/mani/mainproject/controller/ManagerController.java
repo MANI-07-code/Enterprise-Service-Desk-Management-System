@@ -1,6 +1,7 @@
 package com.mani.mainproject.controller;
 
 import com.mani.mainproject.dto.AssignTicketRequest;
+import com.mani.mainproject.dto.ChangePriorityRequest;
 import com.mani.mainproject.dto.TicketResponse;
 import com.mani.mainproject.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,12 @@ public class ManagerController {
         return ticketService.assignTicket(id, request);
     }
 
+    @PutMapping("/tickets/{id}/priority")
+    public String changePriority(
+            @PathVariable Long id,
+            @RequestBody ChangePriorityRequest request){
+
+        return ticketService.changeTicketPriority(id, request);
+    }
 
 }

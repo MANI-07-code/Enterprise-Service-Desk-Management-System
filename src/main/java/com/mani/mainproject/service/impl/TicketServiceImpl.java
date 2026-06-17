@@ -1,9 +1,6 @@
 package com.mani.mainproject.service.impl;
 
-import com.mani.mainproject.dto.AssignTicketRequest;
-import com.mani.mainproject.dto.CreateTicketRequest;
-import com.mani.mainproject.dto.TicketResponse;
-import com.mani.mainproject.dto.UpdateTicketStatusRequest;
+import com.mani.mainproject.dto.*;
 import com.mani.mainproject.entity.Ticket;
 import com.mani.mainproject.entity.User;
 import com.mani.mainproject.enums.Role;
@@ -166,6 +163,21 @@ return "Ticket status updated successfully";
         return "Ticket closed successfully";
 
 
+    }
+
+    @Override
+    public String changeTicketPriority(Long ticketId , ChangePriorityRequest request){
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+
+        if(ticket.getStatus() == TicketStatus.CLOSED){
+            throw new BadRequestException("cannot change priority of closed ticket");
+        }
+        ticket.setPriority(request.getPriority());
+        ticketRepository.save(ticket);
+
+        return "Priority updated successfully";
     }
 
     private TicketResponse convertToResponse(
