@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DashboardResponse {
+public class ManagerDashboardResponse {
 
     private Long openTickets;
     private Long assignedTickets;

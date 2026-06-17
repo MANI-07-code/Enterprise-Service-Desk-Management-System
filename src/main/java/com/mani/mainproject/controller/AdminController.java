@@ -1,5 +1,6 @@
 package com.mani.mainproject.controller;
 
+import com.mani.mainproject.dto.AdminDashboardResponse;
 import com.mani.mainproject.dto.ChangeRoleRequest;
 import com.mani.mainproject.dto.ChangeStatusRequest;
 import com.mani.mainproject.dto.UserResponse;
@@ -34,5 +35,12 @@ public class AdminController {
     @PutMapping("/users/{id}/status")
     public String changeStatus(@PathVariable Long id , @RequestBody ChangeStatusRequest request){
         return userService.changeUserStatus(id,request);
+    }
+
+    @GetMapping("/dashboard")
+    public AdminDashboardResponse getDashboard(){
+
+        return userService.getAdminDashboard();
+
     }
 }

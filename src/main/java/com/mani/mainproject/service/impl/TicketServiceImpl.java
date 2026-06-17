@@ -218,9 +218,9 @@ return "Ticket status updated successfully";
 
     }
 
-    public DashboardResponse getManagerDashboard(){
+    public ManagerDashboardResponse getManagerDashboard(){
 
-        DashboardResponse response = new DashboardResponse();
+        ManagerDashboardResponse response = new ManagerDashboardResponse();
         response.setOpenTickets(ticketRepository.countByStatus(TicketStatus.OPEN));
         response.setAssignedTickets(ticketRepository.countByStatus(TicketStatus.ASSIGNED));
         response.setInProgressTickets(ticketRepository.countByStatus(TicketStatus.IN_PROGRESS));

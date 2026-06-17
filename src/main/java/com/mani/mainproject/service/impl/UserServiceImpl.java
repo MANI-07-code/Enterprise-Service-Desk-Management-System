@@ -1,10 +1,13 @@
 package com.mani.mainproject.service.impl;
 
+import com.mani.mainproject.dto.AdminDashboardResponse;
 import com.mani.mainproject.dto.ChangeRoleRequest;
 import com.mani.mainproject.dto.ChangeStatusRequest;
 import com.mani.mainproject.dto.UserResponse;
 import com.mani.mainproject.entity.User;
+import com.mani.mainproject.enums.UserStatus;
 import com.mani.mainproject.exception.ResourceNotFoundException;
+import com.mani.mainproject.repository.TicketRepository;
 import com.mani.mainproject.repository.UserRepository;
 import com.mani.mainproject.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final TicketRepository ticketRepository;
 
     @Override
     public String changeUserRole(Long userId, ChangeRoleRequest request){
@@ -55,6 +60,16 @@ public class UserServiceImpl implements UserService {
         return "Status updated successfully";
     }
 
+    @Override
+    public AdminDashboardResponse getAdminDashboard(){
+        AdminDashboardResponse response = new AdminDashboardResponse();
+        response.setTotalUsers(userRepository.count());
+        response.setActiveUsers(userRepository.countByStatus(UserStatus.ACTIVE));
+        response.setInactiveUsers(userRepository.countByStatus(UserStatus.INACTIVE));
+        response.setTotalTickets(ticketRepository.count());
+        return response;
+    }
+
     private UserResponse convertToResponse(User user){
         UserResponse response =new UserResponse();
         response.setUserId(user.getUserId());
@@ -64,4 +79,5 @@ public class UserServiceImpl implements UserService {
         response.setStatus(user.getStatus());
         return response;
     }
+
 }

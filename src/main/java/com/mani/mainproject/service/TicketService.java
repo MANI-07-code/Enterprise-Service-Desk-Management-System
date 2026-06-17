@@ -24,5 +24,5 @@ public interface TicketService {
 
     TicketResponse getTicketById(Long ticketId);
 
-    DashboardResponse getManagerDashboard();
+    ManagerDashboardResponse getManagerDashboard();
 }

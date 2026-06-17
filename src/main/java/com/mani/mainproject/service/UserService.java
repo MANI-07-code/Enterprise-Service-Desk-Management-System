@@ -1,5 +1,6 @@
 package com.mani.mainproject.service;
 
+import com.mani.mainproject.dto.AdminDashboardResponse;
 import com.mani.mainproject.dto.ChangeRoleRequest;
 import com.mani.mainproject.dto.ChangeStatusRequest;
 import com.mani.mainproject.dto.UserResponse;
@@ -15,4 +16,6 @@ public interface UserService {
     UserResponse getUserById(Long userId);
 
     String changeUserStatus(Long userId, ChangeStatusRequest request);
+
+    AdminDashboardResponse getAdminDashboard();
 }
