@@ -23,4 +23,6 @@ public interface TicketService {
     String changeTicketPriority(Long ticketId , ChangePriorityRequest request);
 
     TicketResponse getTicketById(Long ticketId);
+
+    DashboardResponse getManagerDashboard();
 }

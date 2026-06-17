@@ -218,9 +218,20 @@ return "Ticket status updated successfully";
 
     }
 
+    public DashboardResponse getManagerDashboard(){
 
-    private TicketResponse convertToResponse(
-            Ticket ticket){
+        DashboardResponse response = new DashboardResponse();
+        response.setOpenTickets(ticketRepository.countByStatus(TicketStatus.OPEN));
+        response.setAssignedTickets(ticketRepository.countByStatus(TicketStatus.ASSIGNED));
+        response.setInProgressTickets(ticketRepository.countByStatus(TicketStatus.IN_PROGRESS));
+        response.setResolvedTickets(ticketRepository.countByStatus(TicketStatus.RESOLVED));
+        response.setClosedTickets(ticketRepository.countByStatus(TicketStatus.CLOSED));
+
+        return response;
+    }
+
+
+    private TicketResponse convertToResponse(Ticket ticket){
 
         TicketResponse response =new TicketResponse();
         response.setTitle(ticket.getTitle());

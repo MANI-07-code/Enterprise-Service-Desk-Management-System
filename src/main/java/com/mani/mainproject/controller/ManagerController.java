@@ -2,6 +2,7 @@ package com.mani.mainproject.controller;
 
 import com.mani.mainproject.dto.AssignTicketRequest;
 import com.mani.mainproject.dto.ChangePriorityRequest;
+import com.mani.mainproject.dto.DashboardResponse;
 import com.mani.mainproject.dto.TicketResponse;
 import com.mani.mainproject.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,11 @@ public class ManagerController {
             @RequestBody ChangePriorityRequest request){
 
         return ticketService.changeTicketPriority(id, request);
+    }
+
+    @GetMapping("/dashboard")
+    public DashboardResponse getDashboard(){
+        return ticketService.getManagerDashboard();
     }
 
 }
