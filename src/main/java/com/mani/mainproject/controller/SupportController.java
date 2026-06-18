@@ -1,5 +1,6 @@
 package com.mani.mainproject.controller;
 
+import com.mani.mainproject.dto.SupportDashboardResponse;
 import com.mani.mainproject.dto.TicketResponse;
 import com.mani.mainproject.dto.UpdateTicketStatusRequest;
 import com.mani.mainproject.service.TicketService;
@@ -24,6 +25,11 @@ public class SupportController {
     public String updateTicketStatus(@PathVariable Long id , @RequestBody UpdateTicketStatusRequest request){
 
         return ticketService.updateTicketStatus(id,request);
+    }
+
+    @GetMapping("/dashoard")
+    public SupportDashboardResponse getDashboard(){
+        return ticketService.getSupportDashboard();
     }
 
 }

@@ -218,6 +218,7 @@ return "Ticket status updated successfully";
 
     }
 
+    @Override
     public ManagerDashboardResponse getManagerDashboard(){
 
         ManagerDashboardResponse response = new ManagerDashboardResponse();
@@ -230,7 +231,24 @@ return "Ticket status updated successfully";
         return response;
     }
 
+@Override
+public SupportDashboardResponse getSupportDashboard(){
 
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SupportDashboardResponse response = new SupportDashboardResponse();
+        response.setAssignedTickets(ticketRepository.countByAssignedToAndStatus(
+                user, TicketStatus.ASSIGNED));
+
+        response.setInProgressTickets(ticketRepository.countByAssignedToAndStatus(
+                user,TicketStatus.IN_PROGRESS));
+
+        response.setResolvedTickets(ticketRepository.countByAssignedToAndStatus(
+                user,
+                TicketStatus.RESOLVED));
+
+        return response;
+
+}
     private TicketResponse convertToResponse(Ticket ticket){
 
         TicketResponse response =new TicketResponse();

@@ -13,4 +13,6 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     List<Ticket> findByAssignedTo(User user);
 
     long countByStatus(TicketStatus status);
+
+    long countByAssignedToAndStatus(User assignedTo , TicketStatus status);
 }
