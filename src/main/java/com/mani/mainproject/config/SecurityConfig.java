@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/manager/**").hasAuthority("MANAGER")
                         .requestMatchers("/api/support/**").hasAuthority("SUPPORT_ENGINEER")
-                        .requestMatchers("/api/employee/**").hasAuthority("EMPLOYEE")
+                      //  .requestMatchers("/api/employee/**").hasAuthority("EMPLOYEE")
                         .requestMatchers("/api/tickets/**").hasAuthority("EMPLOYEE")
                         .anyRequest().authenticated())
 //                .httpBasic(Customizer.withDefaults());

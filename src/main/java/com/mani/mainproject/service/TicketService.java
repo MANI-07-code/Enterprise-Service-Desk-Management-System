@@ -27,4 +27,6 @@ public interface TicketService {
     ManagerDashboardResponse getManagerDashboard();
 
     SupportDashboardResponse getSupportDashboard();
+
+    EmployeeDashboardResponse getEmployeeDashboard();
 }

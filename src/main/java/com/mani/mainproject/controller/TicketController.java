@@ -1,8 +1,10 @@
 package com.mani.mainproject.controller;
 
 import com.mani.mainproject.dto.CreateTicketRequest;
+import com.mani.mainproject.dto.EmployeeDashboardResponse;
 import com.mani.mainproject.dto.TicketResponse;
 import com.mani.mainproject.service.TicketService;
+import com.mani.mainproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,11 @@ public class TicketController {
             @PathVariable Long id){
 
         return ticketService.closeTicket(id);
+    }
+
+    @GetMapping("/dashboard")
+    public EmployeeDashboardResponse getEmployeeDashboard(){
+        return ticketService.getEmployeeDashboard();
     }
 
 }

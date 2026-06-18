@@ -1,16 +1,15 @@
 package com.mani.mainproject.service.impl;
 
-import com.mani.mainproject.dto.AdminDashboardResponse;
-import com.mani.mainproject.dto.ChangeRoleRequest;
-import com.mani.mainproject.dto.ChangeStatusRequest;
-import com.mani.mainproject.dto.UserResponse;
+import com.mani.mainproject.dto.*;
 import com.mani.mainproject.entity.User;
+import com.mani.mainproject.enums.TicketStatus;
 import com.mani.mainproject.enums.UserStatus;
 import com.mani.mainproject.exception.ResourceNotFoundException;
 import com.mani.mainproject.repository.TicketRepository;
 import com.mani.mainproject.repository.UserRepository;
 import com.mani.mainproject.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -69,6 +68,7 @@ public class UserServiceImpl implements UserService {
         response.setTotalTickets(ticketRepository.count());
         return response;
     }
+
 
     private UserResponse convertToResponse(User user){
         UserResponse response =new UserResponse();

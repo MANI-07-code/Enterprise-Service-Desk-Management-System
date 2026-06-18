@@ -1,6 +1,7 @@
 package com.mani.mainproject.repository;
 
 import com.mani.mainproject.entity.User;
+import com.mani.mainproject.enums.TicketStatus;
 import com.mani.mainproject.enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByEmail(String email);
 
     long countByStatus(UserStatus status);
+
+
 }

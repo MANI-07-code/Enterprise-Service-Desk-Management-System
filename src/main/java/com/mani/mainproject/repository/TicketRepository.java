@@ -15,4 +15,6 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
     long countByStatus(TicketStatus status);
 
     long countByAssignedToAndStatus(User assignedTo , TicketStatus status);
+
+    long countByCreatedByAndStatus(User createdBy , TicketStatus status);
 }

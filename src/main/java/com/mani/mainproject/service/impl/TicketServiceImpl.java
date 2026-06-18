@@ -249,6 +249,20 @@ public SupportDashboardResponse getSupportDashboard(){
         return response;
 
 }
+
+    @Override
+    public EmployeeDashboardResponse getEmployeeDashboard(){
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        EmployeeDashboardResponse response = new EmployeeDashboardResponse();
+
+        response.setOpenTickets(ticketRepository.countByAssignedToAndStatus(user, TicketStatus.OPEN));
+        response.setResolvedTickets(ticketRepository.countByAssignedToAndStatus(user,TicketStatus.RESOLVED));
+        response.setClosedTickets(ticketRepository.countByAssignedToAndStatus(user,TicketStatus.CLOSED));
+
+        return response;
+    }
+
     private TicketResponse convertToResponse(Ticket ticket){
 
         TicketResponse response =new TicketResponse();
