@@ -17,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(TicketServiceImpl.class);
 
 
     private final TicketRepository ticketRepository;
@@ -42,6 +48,7 @@ public class TicketServiceImpl implements TicketService {
         ticket.setAssignedTo(null);
 
         Ticket savedTicket = ticketRepository.save(ticket);
+        logger.info("Ticket created successfully by User = {} TicketId = {}", user.getUserId(),ticket.getTicketId());
 
         return convertToResponse(savedTicket);
     }
@@ -75,6 +82,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public String assignTicket(Long ticketId , AssignTicketRequest request){
+
+        User manager = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
 
@@ -94,6 +103,13 @@ public class TicketServiceImpl implements TicketService {
         ticket.setAssignedTo(engineer);
         ticket.setStatus(TicketStatus.ASSIGNED);
         ticketRepository.save(ticket);
+
+        logger.info(
+                "Manager {} assigned Ticket {} to Support Engineer {}",
+                manager.getUserId(),
+                ticket.getTicketId(),
+                engineer.getUserId()
+        );
         return "Ticket assigned successfully";
     }
 
@@ -114,6 +130,8 @@ public class TicketServiceImpl implements TicketService {
     public String updateTicketStatus(Long ticketId , UpdateTicketStatusRequest request){
 
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new ResourceNotFoundException("Invalid ticket"));
+
+        TicketStatus oldStatus = ticket.getStatus();
 
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -138,6 +156,14 @@ public class TicketServiceImpl implements TicketService {
         }
 
         ticketRepository.save(ticket);
+
+        logger.info(
+                "Support Engineer {} changed Ticket {} status from {} to {}",
+                user.getUserId(),
+                ticket.getTicketId(),
+                oldStatus,
+                request.getStatus()
+        );
 return "Ticket status updated successfully";
     }
 
@@ -160,6 +186,12 @@ return "Ticket status updated successfully";
         ticket.setStatus(TicketStatus.CLOSED);
 
         ticketRepository.save(ticket);
+
+        logger.info(
+                "Ticket {} closed by Employee {}",
+                ticket.getTicketId(),
+                user.getUserId()
+        );
 
         return "Ticket closed successfully";
 
@@ -213,6 +245,12 @@ return "Ticket status updated successfully";
                 return convertToResponse(ticket);
             }
         }
+
+        logger.warn(
+                "Unauthorized access attempt. UserId={}, TicketId={}",
+                user.getUserId(),
+                ticketId
+        );
 
         throw new ForbiddenException("Access denied");
 

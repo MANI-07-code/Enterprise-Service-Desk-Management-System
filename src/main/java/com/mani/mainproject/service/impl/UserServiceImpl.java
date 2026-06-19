@@ -2,6 +2,7 @@ package com.mani.mainproject.service.impl;
 
 import com.mani.mainproject.dto.*;
 import com.mani.mainproject.entity.User;
+import com.mani.mainproject.enums.Role;
 import com.mani.mainproject.enums.TicketStatus;
 import com.mani.mainproject.enums.UserStatus;
 import com.mani.mainproject.exception.ResourceNotFoundException;
@@ -12,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,19 +25,34 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final static Logger logger =LoggerFactory.getLogger(UserServiceImpl.class);
+
     private final TicketRepository ticketRepository;
 
     @Override
     public String changeUserRole(Long userId, ChangeRoleRequest request){
 
+        User admin = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
+        Role oldRole = user.getRole();
         user.setRole(request.getRole());
         userRepository.save(user);
+
+        logger.info(
+                "Admin {} changed User {} role from {} to {}",
+                admin.getUserId(),
+                user.getUserId(),
+                oldRole,
+                request.getRole()
+        );
+
        return "Role updated successfully";
     }
+
 @Override
     public List<UserResponse> getAllUsers(){
 
@@ -53,9 +72,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changeUserStatus(Long userId, ChangeStatusRequest request){
+
+        User admin =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User Not Found"));
+        UserStatus oldStatus = user.getStatus();
         user.setStatus(request.getStatus());
         userRepository.save(user);
+
+        logger.info(
+                "Admin {} changed User {} status from {} to {}",
+                admin.getUserId(),
+                user.getUserId(),
+                oldStatus,
+                request.getStatus()
+        );
         return "Status updated successfully";
     }
 

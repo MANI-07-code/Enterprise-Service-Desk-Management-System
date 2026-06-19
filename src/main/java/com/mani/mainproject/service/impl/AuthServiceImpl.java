@@ -17,12 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class AuthServiceImpl implements AuthService {
+
+    private final static Logger logger =LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private final UserRepository userRepository;//constructor injection
 
     private final PasswordEncoder passwordEncoder;
+
 
     private final JwtService jwtService;
 
@@ -46,13 +52,20 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.EMPLOYEE);
         user.setStatus(UserStatus.ACTIVE);
-          userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
           UserResponse response = new UserResponse();
           response.setUserId(user.getUserId());
           response.setUserName(user.getUserName());
           response.setEmail(user.getEmail());
           response.setRole(user.getRole());
+
+        logger.info(
+                "New user registered. UserId={}, Email={}, Role={}",
+                savedUser.getUserId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
 
         return response;
 
@@ -94,7 +107,11 @@ public class AuthServiceImpl implements AuthService {
             response.setEmail(user.getEmail());
             response.setRole(user.getRole());
 
-
+        logger.info(
+                "User {} ({}) logged in successfully",
+                user.getUserId(),
+                user.getEmail()
+        );
 
         return response;
     }
